@@ -2,7 +2,7 @@ import { NavLink } from "react-router-dom";
 import c from './ResetPass.module.css';
 import Contact from '../Contact/Contact';
 import { useAuthState } from "react-firebase-hooks/auth";
-import { auth, sendPasswordReset } from "../../../firebase";
+import { auth, sendPasswordReset } from "../../../service/UserService";
 import { useNavigate } from "react-router-dom";
 import React, { useEffect, useState } from "react";
 

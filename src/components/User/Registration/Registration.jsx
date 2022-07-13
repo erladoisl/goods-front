@@ -6,7 +6,7 @@ import {
     auth,
     registerWithEmailAndPassword,
     signInWithGoogle,
-} from "../../../firebase";
+} from "../../../service/UserService";
 import Contact from '../Contact/Contact';
 import c from './Registration.module.css';
 

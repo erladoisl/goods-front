@@ -2,8 +2,8 @@ import { NavLink } from "react-router-dom";
 import c from './Login.module.css';
 import Contact from '../Contact/Contact';
 import { useAuthState } from "react-firebase-hooks/auth";
-import { auth, logInWithEmailAndPassword, signInWithGoogle } from "../../../firebase";
-import { Link, useNavigate } from "react-router-dom";
+import { auth, logInWithEmailAndPassword, signInWithGoogle } from "../../../service/UserService";
+import { useNavigate } from "react-router-dom";
 import React, { useEffect, useState } from "react";
 
 
@@ -22,7 +22,7 @@ const Login = (() => {
             return;
         }
         if (user) navigate("/content");
-    }, [user, loading]);
+    }, [user, loading, navigate]);
 
     const handleSubmit = ((e) => {
         e.preventDefault()
