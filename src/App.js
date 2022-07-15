@@ -7,6 +7,7 @@ import { Provider } from "./contexts/index"
 import Good from "./components/Content/Goods/Good/Good";
 import { MainTemplate } from "./components/MainTemplate/MainTemplate";
 import Goods from "./components/Content/Goods/Goods";
+import React from "react";
 
 function App() {
   return (

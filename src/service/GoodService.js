@@ -5,6 +5,7 @@ import {
     query,
     getDocs,
     collection,
+    orderBy,
     where,
     addDoc,
 } from "firebase/firestore";
@@ -71,7 +72,7 @@ const get_links = async (good_id) => {
 const get_prices = async (link_id) => {
     const links = [];
     try {
-        const q = query(collection(db, 'prices'), where('link_id', '==', link_id))
+        const q = query(collection(db, 'prices'), orderBy("date"), where('link_id', '==', link_id))
 
         await getDocs(q)
             .then(querySnapshot => {

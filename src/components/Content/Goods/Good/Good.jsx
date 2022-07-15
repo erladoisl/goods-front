@@ -22,13 +22,17 @@ const Good = (() => {
     return (
         <div className="container text-white">
             <h3> {state.name} </h3>
+            <br />
+            <div className="text-start">Самая выгодная цена в магазине <b>dns-shop 7000 рублей</b> на 12.07.2022</div>
             {links.map((item, i) => {
                 return (
-                    <div key={i} className='text-start'>
-                        <h4> {item.name} </h4>
-                        <div>Ссылка: {item.link}</div>
-                        <div>Ссылка: {item.id}</div>
-                        <Graph link_id = {item.id}/>
+                    <div key={i}>
+                        <hr />
+                        <div className='text-start'>
+                            <h4> {item.name} </h4>
+                            <div>Ссылка: {item.link}</div>
+                            <Graph link_id={item.id} />
+                        </div>
                     </div>
                 )
             })}
