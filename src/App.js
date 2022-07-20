@@ -8,6 +8,7 @@ import Good from "./components/Content/Goods/Good/Good";
 import { MainTemplate } from "./components/MainTemplate/MainTemplate";
 import Goods from "./components/Content/Goods/Goods";
 import React from "react";
+import Edit from "./components/Content/Goods/Edit/Edit";
 
 function App() {
   return (
@@ -20,6 +21,7 @@ function App() {
               <Route exact path="/reset" element={<ResetPass />} />
               <Route exact path="/content" element={<MainTemplate> <Goods /> </MainTemplate>} />
               <Route exact path="/good-view" element={<MainTemplate> <Good /> </MainTemplate> } />
+              <Route exact path="/edit-good" element={<MainTemplate> <Edit /> </MainTemplate> } />
           </Routes>
         </BrowserRouter>
       </Provider>

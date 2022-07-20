@@ -8,6 +8,8 @@ import {
     orderBy,
     where,
     addDoc,
+    updateDoc,
+    doc, deleteDoc
 } from "firebase/firestore";
 
 const firebaseConfig = {
@@ -23,14 +25,95 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app)
 
 
-const add_goods = async (good) => {
+const edit_good = async (good) => {
     try {
-        const goodRef = await addDoc(collection(db, "goods"), good);
-        console.log("Document written with ID: ", goodRef.id);
+        let goodRef = {};
+
+        if (good.id != -1) {
+            const good_doc = doc(db, 'goods', good.id)
+            goodRef = await updateDoc(good_doc, good);
+        } else {
+            console.log('new')
+            goodRef = await addDoc(collection(db, "goods"), good);
+        }
+        const good_id = good.id === -1 ? goodRef.id : good.id
+        console.log("Document written with ID: ", good_id);
+
+        return { error: false, message: '', id: good_id };
     } catch (e) {
-        console.error("Error adding document: ", e);
+        console.error("Error adding good: ", e);
+
+        return { error: true, message: 'Ошибка при добавлении продукта', id: good.id };
+    };
+};
+
+
+const delete_price = async (price_id) => {
+    try {
+        await deleteDoc(doc(db, 'prices', price_id))
+    } catch (e) {
+        console.error("Error deleting price: ", e);
+
+        return { error: true, message: 'Ошибка при удалении цены', id: price_id };
+    }
+}
+
+const delete_link = async (link_id) => {
+    try {
+        await deleteDoc(doc(db, 'links', link_id))
+    } catch (e) {
+        console.error("Error deleting link: ", e);
+
+        return { error: true, message: 'Ошибка при удалении ссылки', id: link_id };
+    }
+}
+
+const delete_goods_links_and_prices = async (good_id) => {
+    const prices = query(collection(db, 'prices'), where('good_id', '==', good_id))
+
+    await getDocs(prices)
+        .then(querySnapshot => {
+            querySnapshot.docs.forEach(doc => {
+                deleteDoc(doc)
+            });
+        });
+
+
+    const links = query(collection(db, 'links'), where('good_id', '==', good_id))
+
+    await getDocs(links)
+        .then(querySnapshot => {
+            querySnapshot.docs.forEach(doc => {
+                deleteDoc(doc)
+            });
+        });
+}
+
+const delete_good = async (good_id) => {
+    try {
+        await delete_goods_links_and_prices(good_id)
+        await deleteDoc(doc(db, 'goods', good_id))
+        
+        return { error: false, message: 'Успешно удалено' };
+    } catch (e) {
+        console.error("Error deleting good: ", e);
+
+        return { error: true, message: 'Ошибка при удалении продукта', id: good_id };
+    }
+}
+
+const add_link = async (link) => {
+    try {
+        const linkRef = await addDoc(collection(db, "links"), link);
+        console.log("Document written with ID: ", linkRef.id);
+
+        return { error: false, message: '', id: linkRef.id }
+    } catch (e) {
+        console.error("Error adding link: ", e);
+        return { error: true, message: 'Ошибка при добавлении ссылки', id: -1 }
     }
 };
+
 
 const get_goods = async () => {
     const goods = [];
@@ -89,7 +172,9 @@ const get_prices = async (link_id) => {
 };
 export {
     get_goods,
-    add_goods,
+    edit_good,
     get_links,
-    get_prices
+    get_prices,
+    add_link,
+    delete_good
 }
