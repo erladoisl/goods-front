@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { useLocation } from 'react-router-dom'
-import { get_links, add_link, edit_good } from '../../../../service/GoodService';
+import { get_links, add_link, edit_good, delete_link } from '../../../../service/GoodService';
 import { useState } from "react";
 
 
@@ -14,14 +14,14 @@ const Edit = (() => {
     });
 
     const [newLinkFormData, setNewLinkFormData] = React.useState({
-        good_id: -1,
+        good_id: state.id,
         name: '',
         url: '',
         status: 'active'
     });
 
     useEffect(() => {
-        if (state.id > 0) {
+        if (state.id != -1) {
             fetch_links(state.id);
         };
     }, [])
@@ -31,18 +31,18 @@ const Edit = (() => {
             set_links(response)
         })
     };
-    
+
     const addGoodSubmit = ((e) => {
         e.preventDefault();
-        console.log(goodFormData)
 
         if (goodFormData.name != '') {
             edit_good(goodFormData).then(function (result) {
                 if (result.error === false) {
-                    setGoodFormData({...goodFormData, id: result.id});
+                    setGoodFormData({ ...goodFormData, id: result.id });
                     setNewLinkFormData({
                         ...newLinkFormData,
-                        good_id: goodFormData.id})
+                        good_id: goodFormData.id
+                    })
                     alert(`Успешно сохранено`)
                 } else {
                     alert(result.message)
@@ -53,8 +53,9 @@ const Edit = (() => {
 
     const addLinkSubmit = ((e) => {
         e.preventDefault();
+
         if (newLinkFormData.name != '' && newLinkFormData.url != '') {
-            add_link({ name: newLinkFormData.name, url: newLinkFormData.url }).then(function (result) {
+            add_link(newLinkFormData).then(function (result) {
                 if (result.error === false) {
                     fetch_links(state.id);
                     setNewLinkFormData({
@@ -74,7 +75,7 @@ const Edit = (() => {
             <h4 className="mb-3">{state.id > 0 ? state.name : 'Добавление нового продукта'}</h4>
             <br />
             <form className="needs-validation text-start">
-                <div className="row m-1">
+                <div className="row my-1">
                     <div className="col-6 m-auto">
                         <label htmlFor="address" className="form-label">Название продукта</label>
                         <input type='text'
@@ -86,33 +87,37 @@ const Edit = (() => {
                         </div>
                     </div>
                 </div>
-                <div className="row m-1">
+                <div className="row pt-1">
                     <div className="col-6 m-auto">
                         <button onClick={addGoodSubmit} className="btn btn-secondary">Сохранить</button>
+                        <hr />
                     </div>
                 </div>
-                <br />
-                <div className="row m-1">
+
+                <div className="row">
                     <div className="mb-3 col-6 m-auto">{links.length == 0 ? 'Не добавлено ни одной ссылки на продукт' : 'Добавленные ссылки:'}</div>
                 </div>
                 {links.map((item, i) => {
                     return (
-                        <div key={i} className="row g-3">
-                            <hr />
+                        <div key={i} className="row">
                             <div className='col-6 m-auto'>
-                                <h4> {item.name} </h4>
-                                <div>Ссылка: {item.link}</div>
+                                <div key={i} className="row">
+                                    <h4 className="col-11"> {item.name} </h4>
+                                    <div className="col-1">
+                                        <button className="btn btn-danger" onClick={(e) => { e.preventDefault(); delete_link(item.id).then((result) => { if (result.error === false) { fetch_links() } }) }}>Х</button>
+                                    </div>
+                                    <div className="col-12">Ссылка: {item.url}</div>
+                                </div>
                             </div>
                         </div>
                     )
                 })}
 
-                <hr />
 
-                <br />
 
                 <div className="row">
                     <div className="col-6 m-auto">
+                        <hr />
                         <div className="row">
                             <h5 className="mb-3 col-12 m-auto">Добавление новой ссылки:</h5>
                             <div className="col-12 m-1">

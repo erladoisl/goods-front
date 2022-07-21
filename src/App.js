@@ -6,7 +6,7 @@ import ResetPass from "./components/User/ResetPass/ResetPass";
 import { Provider } from "./contexts/index"
 import Good from "./components/Content/Goods/Good/Good";
 import { MainTemplate } from "./components/MainTemplate/MainTemplate";
-import Goods from "./components/Content/Goods/Goods";
+import GoodsPage from "./components/Content/Goods/GoodsPage";
 import React from "react";
 import Edit from "./components/Content/Goods/Edit/Edit";
 
@@ -19,7 +19,7 @@ function App() {
             <Route exact path="/" element={<Login />} />
               <Route exact path="/register" element={<Register />} />
               <Route exact path="/reset" element={<ResetPass />} />
-              <Route exact path="/content" element={<MainTemplate> <Goods /> </MainTemplate>} />
+              <Route exact path="/content" element={<MainTemplate> <GoodsPage /> </MainTemplate>} />
               <Route exact path="/good-view" element={<MainTemplate> <Good /> </MainTemplate> } />
               <Route exact path="/edit-good" element={<MainTemplate> <Edit /> </MainTemplate> } />
           </Routes>

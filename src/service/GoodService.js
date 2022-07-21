@@ -61,14 +61,16 @@ const delete_price = async (price_id) => {
 const delete_link = async (link_id) => {
     try {
         await deleteDoc(doc(db, 'links', link_id))
+
+        return { error: false, message: 'Успешно удалено' };
     } catch (e) {
         console.error("Error deleting link: ", e);
 
-        return { error: true, message: 'Ошибка при удалении ссылки', id: link_id };
+        return { error: true, message: 'Ошибка при удалении ссылки' };
     }
 }
 
-const delete_goods_links_and_prices = async (good_id) => {
+const delete_goods_prices = async (good_id) => {
     const prices = query(collection(db, 'prices'), where('good_id', '==', good_id))
 
     await getDocs(prices)
@@ -77,8 +79,9 @@ const delete_goods_links_and_prices = async (good_id) => {
                 deleteDoc(doc)
             });
         });
+}
 
-
+const delete_goods_links = async (good_id) => {
     const links = query(collection(db, 'links'), where('good_id', '==', good_id))
 
     await getDocs(links)
@@ -91,14 +94,15 @@ const delete_goods_links_and_prices = async (good_id) => {
 
 const delete_good = async (good_id) => {
     try {
-        await delete_goods_links_and_prices(good_id)
+        await delete_goods_prices(good_id)
+        await delete_goods_links(good_id);
         await deleteDoc(doc(db, 'goods', good_id))
-        
+
         return { error: false, message: 'Успешно удалено' };
     } catch (e) {
         console.error("Error deleting good: ", e);
 
-        return { error: true, message: 'Ошибка при удалении продукта', id: good_id };
+        return { error: true, message: 'Ошибка при удалении продукта' };
     }
 }
 
@@ -176,5 +180,6 @@ export {
     get_links,
     get_prices,
     add_link,
-    delete_good
+    delete_good,
+    delete_link
 }
