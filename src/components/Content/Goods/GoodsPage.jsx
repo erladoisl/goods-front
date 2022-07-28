@@ -1,12 +1,13 @@
 import { NavLink } from "react-router-dom";
 import GoodList from "./GoodList/GoodList";
 import Folders from "../Folders/Folders";
+import Edit from "../Folders/Edit/Edit";
 import { useLocation } from "react-router-dom";
 
 const Goods = (props) => {
   const { state } = useLocation();
   const get_back_link = () => {
-    if (state && state.folder_id && state.folder_id != "0") {
+    if (state && state.folder_id && state.folder_id !== "0") {
       return (
         <NavLink
           to="/content"
@@ -21,14 +22,14 @@ const Goods = (props) => {
   return (
     <div>
       <main>
-        <p className="lead text-end">
+        <div className="lead text-end">
           <NavLink
             to="/edit-good"
             state={{
               id: -1,
               name: "",
               folder_id:
-                state && state.folder_id && state.folder_id != "0"
+                state && state.folder_id
                   ? state.folder_id
                   : "0",
             }}
@@ -36,21 +37,15 @@ const Goods = (props) => {
           >
             Добавить товар
           </NavLink>
-          <NavLink
-            to="/edit-folder"
+          <Edit 
             state={{
-              id: -1,
-              name: "",
               folder_id:
-                state && state.folder_id && state.folder_id != "0"
+                state && state.folder_id
                   ? state.folder_id
                   : "0",
             }}
-            className="btn btn-lg btn-dark m-2"
-          >
-            Добавить папку
-          </NavLink>
-        </p>
+            />
+        </div>
       </main>
       <div className="container text-white">
         <h3>Товары для мониторинга:</h3>

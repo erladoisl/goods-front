@@ -29,7 +29,7 @@ const edit_good = async (good) => {
     try {
         let goodRef = {};
 
-        if (good.id != -1) {
+        if (good.id !== -1) {
             const good_doc = doc(db, 'goods', good.id)
             goodRef = await updateDoc(good_doc, good);
         } else {
@@ -42,6 +42,26 @@ const edit_good = async (good) => {
         console.error("Error adding good: ", e);
 
         return { error: true, message: 'Ошибка при добавлении продукта', id: good.id };
+    };
+};
+
+const edit_folder = async (folder) => {
+    try {
+        let folderRef = {};
+        // console.log(folder)
+        if (folder.id !== -1) {
+            const folder_doc = doc(db, 'folder', folder.id)
+            folderRef = await updateDoc(folder_doc, folder);
+        } else {
+            folderRef = await addDoc(collection(db, "folder"), folder);
+        }
+        const folder_id = folder.id === -1 ? folderRef.id : folder.id
+
+        return { error: false, message: '', id: folder_id };
+    } catch (e) {
+        console.error("Error adding folder: ", e);
+
+        return { error: true, message: 'Ошибка при добавлении folder', id: folder.id };
     };
 };
 
@@ -62,8 +82,8 @@ const delete_goods_prices = async (good_id) => {
 
     await getDocs(prices)
         .then(querySnapshot => {
-            querySnapshot.docs.forEach(doc => {
-                deleteDoc(doc)
+            querySnapshot.docs.forEach(price => {
+                deleteDoc(doc(db, 'prices', price.id))
             });
         });
 }
@@ -73,8 +93,8 @@ const delete_goods_links = async (good_id) => {
 
     await getDocs(links)
         .then(querySnapshot => {
-            querySnapshot.docs.forEach(doc => {
-                deleteDoc(doc)
+            querySnapshot.docs.forEach(link => {
+                deleteDoc(doc(db, 'links', link.id))
             });
         });
 }
@@ -104,7 +124,7 @@ const delete_folder = async (folder_id) => {
                 });
             });
 
-        await deleteDoc(doc(db, 'folders', folder_id))
+        await deleteDoc(doc(db, 'folder', folder_id))
 
         return { error: false, message: 'Успешно удалено' };
     } catch (e) {
@@ -211,5 +231,6 @@ export {
     delete_good,
     delete_link,
     get_folders,
-    delete_folder
+    delete_folder,
+    edit_folder
 }
