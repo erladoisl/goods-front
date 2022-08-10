@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import {
   get_links,
@@ -6,19 +6,18 @@ import {
   edit_good,
   delete_link,
 } from "../../../../service/GoodService";
-import { useState } from "react";
 
 const Edit = () => {
   const { state } = useLocation();
   const [links, set_links] = useState([]);
-  const [goodFormData, setGoodFormData] = React.useState({
+  const [goodFormData, setGoodFormData] = useState({
     id: state.id,
     name: state.name,
     user_id: -1,
     folder_id: state.folder_id,
   });
 
-  const [newLinkFormData, setNewLinkFormData] = React.useState({
+  const [newLinkFormData, setNewLinkFormData] = useState({
     good_id: state.id,
     name: "",
     url: "",
@@ -26,8 +25,8 @@ const Edit = () => {
   });
 
   useEffect(() => {
-    if (state.id != -1) {
-      fetch_links(state.id);
+    if (goodFormData.id !== -1) {
+      fetch_links(goodFormData.id);
     }
   }, []);
 
@@ -44,10 +43,7 @@ const Edit = () => {
       edit_good(goodFormData).then(function (result) {
         if (result.error === false) {
           setGoodFormData({ ...goodFormData, id: result.id });
-          setNewLinkFormData({
-            ...newLinkFormData,
-            good_id: goodFormData.id,
-          });
+          setNewLinkFormData({ ...newLinkFormData, good_id: result.id });
           alert(`Успешно сохранено`);
         } else {
           alert(result.message);
@@ -64,7 +60,7 @@ const Edit = () => {
     } else if (newLinkFormData.name != "" && newLinkFormData.url != "") {
       add_link(newLinkFormData).then(function (result) {
         if (result.error === false) {
-          fetch_links(state.id);
+          fetch_links(goodFormData.id);
           setNewLinkFormData({
             ...newLinkFormData,
             name: "",
