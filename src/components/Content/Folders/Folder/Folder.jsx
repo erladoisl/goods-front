@@ -8,6 +8,7 @@ const Folder = (props) => {
           to="/content"
           state={{
             folder_id: props.item.id,
+            folder_name: props.item.name,
             parent_folder_id: props.parent_folder_id,
           }}
           className="link-light"

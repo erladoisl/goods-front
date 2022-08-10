@@ -50,9 +50,8 @@ const Goods = (props) => {
       <div className="container text-white">
         <h3>Товары для мониторинга:</h3>
 
-        <div className="text-start">{get_back_link()}</div>
+        <div className="text-start">{get_back_link()} <div className="text-start text-uppercase p-2">{state.folder_name}</div></div>
 
-        <h5>{props.name}</h5>
         <table className="table text-white text-start">
           <thead>
             <tr>
