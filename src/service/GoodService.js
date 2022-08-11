@@ -113,6 +113,7 @@ const delete_good = async (good_id) => {
     }
 }
 
+
 const delete_folder = async (folder_id) => {
     try {  
         const goods = query(collection(db, 'goods'), where('folder_id', '==', folder_id))
@@ -145,83 +146,47 @@ const add_link = async (link) => {
     }
 };
 
+const get_objects_by_field = async (field_name, field_value, object_name, ordered_field_name='', ordered=false) => {
+    let objects = [];
+    let q = null;
 
-const get_goods = async (folder_id = '0') => {
-    const goods = [];
     try {
-        const q = query(collection(db, 'goods'), where('folder_id', '==', folder_id))
+        if (ordered) {
+            q = query(collection(db, object_name), orderBy(ordered_field_name), where(field_name, '==', field_value))
+        } else {
+            q = query(collection(db, object_name), where(field_name, '==', field_value))
+        }
 
         await getDocs(q)
             .then(querySnapshot => {
                 querySnapshot.docs.forEach(doc => {
-                    goods.push({ ...doc.data(), id: doc.id });
+                    objects.push({ ...doc.data(), id: doc.id });
                 });
             });
     } catch (err) {
         console.error(err);
         alert(err.message);
     } finally {
-        return goods;
+        return objects;
     }
+}
 
+const get_goods = async (folder_id = '0') => {
+    return await get_objects_by_field('folder_id', folder_id, 'goods')
 };
 
 const get_links = async (good_id) => {
-    const links = [];
-    try {
-        const q = query(collection(db, 'links'), where('good_id', '==', good_id))
-
-        await getDocs(q)
-            .then(querySnapshot => {
-                querySnapshot.docs.forEach(doc => {
-                    links.push({ ...doc.data(), id: doc.id });
-                });
-            });
-    } catch (err) {
-        console.error(err);
-        alert(err.message);
-    } finally {
-        return links;
-    }
+    return await get_objects_by_field('good_id', good_id, 'links')
 };
 
 const get_folders = async (folder_id = '0') => {
-    const folders = [];
-    try {
-        const q = query(collection(db, 'folder'), where('parent_id', '==', folder_id))
-
-        await getDocs(q)
-            .then(querySnapshot => {
-                querySnapshot.docs.forEach(doc => {
-                    folders.push({ ...doc.data(), id: doc.id });
-                });
-            });
-    } catch (err) {
-        console.error(err);
-        alert(err.message);
-    } finally {
-        return folders;
-    }
+    return await get_objects_by_field('parent_id', folder_id, 'folder')
 };
 
 const get_prices = async (link_id) => {
-    const links = [];
-    try {
-        const q = query(collection(db, 'prices'), orderBy("date"), where('link_id', '==', link_id))
-
-        await getDocs(q)
-            .then(querySnapshot => {
-                querySnapshot.docs.forEach(doc => {
-                    links.push({ ...doc.data(), id: doc.id });
-                });
-            });
-    } catch (err) {
-        console.error(err);
-        alert(err.message);
-    } finally {
-        return links;
-    }
+    return await get_objects_by_field('link_id', link_id, 'prices', 'date', false)
 };
+
 export {
     get_goods,
     edit_good,
