@@ -12,57 +12,38 @@ import {
     doc, deleteDoc
 } from "firebase/firestore";
 
-const firebaseConfig = {
-    apiKey: "AIzaSyAcUQCGoycGVdR98Ocusf4aEs0tlZo_SGE",
-    authDomain: "goods-gazer.firebaseapp.com",
-    projectId: "goods-gazer",
-    storageBucket: "goods-gazer.appspot.com",
-    messagingSenderId: "514677023453",
-    appId: "1:514677023453:web:7227fe4faca68aa29d3134"
-};
+import { firebaseConfig } from './config';
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app)
 
 
-const edit_good = async (good) => {
+const edit_object = async (object, object_name) => {
     try {
-        let goodRef = {};
+        let objectRef = {};
 
-        if (good.id !== -1) {
-            const good_doc = doc(db, 'goods', good.id)
-            goodRef = await updateDoc(good_doc, good);
+        if (object.id !== -1) {
+            const object_doc = doc(db, object_name, object.id);
+            objectRef = await updateDoc(object_doc, object);
         } else {
-            goodRef = await addDoc(collection(db, "goods"), good);
+            objectRef = await addDoc(collection(db, object_name), object);
         }
-        const good_id = good.id === -1 ? goodRef.id : good.id
+        const object_id = object.id === -1 ? objectRef.id : object.id
 
-        return { error: false, message: '', id: good_id };
+        return { error: false, message: '', id: object_id };
     } catch (e) {
-        console.error("Error adding good: ", e);
+        console.error(`Error adding ${object_name}: `, e);
 
-        return { error: true, message: 'Ошибка при добавлении продукта', id: good.id };
+        return { error: true, message: `Ошибка при добавлении ${object}`, id: object.id };
     };
+}
+
+const edit_good = async (good) => {
+    return await edit_object(good, 'goods')
 };
 
 const edit_folder = async (folder) => {
-    try {
-        let folderRef = {};
-        // console.log(folder)
-        if (folder.id !== -1) {
-            const folder_doc = doc(db, 'folder', folder.id)
-            folderRef = await updateDoc(folder_doc, folder);
-        } else {
-            folderRef = await addDoc(collection(db, "folder"), folder);
-        }
-        const folder_id = folder.id === -1 ? folderRef.id : folder.id
-
-        return { error: false, message: '', id: folder_id };
-    } catch (e) {
-        console.error("Error adding folder: ", e);
-
-        return { error: true, message: 'Ошибка при добавлении folder', id: folder.id };
-    };
+    return await edit_object(folder, 'folder')
 };
 
 const delete_link = async (link_id) => {
@@ -184,18 +165,26 @@ const get_folders = async (folder_id = '0') => {
 };
 
 const get_prices = async (link_id) => {
-    return await get_objects_by_field('link_id', link_id, 'prices', 'date', false)
+    return await get_objects_by_field('link_id', link_id, 'prices', 'date', true)
 };
+
+const get_rules = async (good_id) => {
+    return await get_objects_by_field('good_id', good_id, 'rules')
+}
 
 export {
     get_goods,
-    edit_good,
     get_links,
     get_prices,
+    get_folders,
+    get_rules,
+
     add_link,
+
+    edit_good,
+    edit_folder,
+    
     delete_good,
     delete_link,
-    get_folders,
     delete_folder,
-    edit_folder
 }
