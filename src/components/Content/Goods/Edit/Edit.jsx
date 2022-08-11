@@ -28,7 +28,7 @@ const Edit = () => {
     if (goodFormData.id !== -1) {
       fetch_links(goodFormData.id);
     }
-  }, []);
+  }, [goodFormData.id]);
 
   const fetch_links = async (good_id) => {
     get_links(good_id).then((response) => {
@@ -39,7 +39,7 @@ const Edit = () => {
   const addGoodSubmit = (e) => {
     e.preventDefault();
 
-    if (goodFormData.name != "") {
+    if (goodFormData.name !== "") {
       edit_good(goodFormData).then(function (result) {
         if (result.error === false) {
           setGoodFormData({ ...goodFormData, id: result.id });
@@ -57,7 +57,7 @@ const Edit = () => {
 
     if (goodFormData.id === -1) {
       alert("Сначала нужно сохранить название товара!");
-    } else if (newLinkFormData.name != "" && newLinkFormData.url != "") {
+    } else if (newLinkFormData.name !== "" && newLinkFormData.url !== "") {
       add_link(newLinkFormData).then(function (result) {
         if (result.error === false) {
           fetch_links(goodFormData.id);
@@ -112,7 +112,7 @@ const Edit = () => {
 
         <div className="row">
           <div className="mb-3 col-6 m-auto">
-            {links.length == 0
+            {links.length === 0
               ? "Не добавлено ни одной ссылки на продукт"
               : "Добавленные ссылки:"}
           </div>
