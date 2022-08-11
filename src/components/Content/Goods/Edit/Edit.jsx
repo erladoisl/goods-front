@@ -18,7 +18,7 @@ const Edit = () => {
   });
 
   const [newLinkFormData, setNewLinkFormData] = useState({
-    good_id: state.id,
+    good_id: goodFormData.id,
     name: "",
     url: "",
     status: "active",
@@ -117,6 +117,7 @@ const Edit = () => {
               : "Добавленные ссылки:"}
           </div>
         </div>
+
         {links.map((item, i) => {
           return (
             <div key={i} className="row">
@@ -151,7 +152,6 @@ const Edit = () => {
             <div className="row">
               <h5 className="mb-3 col-12 m-auto">Добавление новой ссылки:</h5>
               <div className="col-12 m-1">
-                {/* <label for="address" className="form-label">Название магазина</label> */}
                 <input
                   type="text"
                   value={newLinkFormData.name}
@@ -171,7 +171,6 @@ const Edit = () => {
                 </div>
               </div>
               <div className="col-12 m-1">
-                {/* <label for="address" className="form-label">Ссылка на товар</label> */}
                 <input
                   type="text"
                   value={newLinkFormData.url}
