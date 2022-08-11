@@ -34,7 +34,7 @@ const GoodList = (props) => {
             <td className="col-1">
               <NavLink
                 to="/edit-good"
-                state={{ name: item.name, id: item.id }}
+                state={{ name: item.name, id: item.id, folder_id: props.folder_id }}
                 className="link-light"
               >
                 Редактировать
