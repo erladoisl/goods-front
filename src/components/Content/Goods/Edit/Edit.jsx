@@ -30,7 +30,7 @@ const Edit = () => {
     }
   }, [goodFormData.id]);
 
-  const fetch_links = async (good_id) => {
+  const fetch_links = async (good_id = goodFormData.id) => {
     get_links(good_id).then((response) => {
       set_links(response);
     });
