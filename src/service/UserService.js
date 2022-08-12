@@ -1,30 +1,23 @@
 import { initializeApp } from "firebase/app";
 import {
-    GoogleAuthProvider,
-    getAuth,
-    signInWithPopup,
-    signInWithEmailAndPassword,
-    createUserWithEmailAndPassword,
-    sendPasswordResetEmail,
-    signOut,
+  GoogleAuthProvider,
+  getAuth,
+  signInWithPopup,
+  signInWithEmailAndPassword,
+  createUserWithEmailAndPassword,
+  sendPasswordResetEmail,
+  signOut,
 } from "firebase/auth";
 import {
-    getFirestore,
-    query,
-    getDocs,
-    collection,
-    where,
-    addDoc,
+  getFirestore,
+  query,
+  getDocs,
+  collection,
+  where,
+  addDoc,
 } from "firebase/firestore";
 
-const firebaseConfig = {
-    apiKey: "AIzaSyAcUQCGoycGVdR98Ocusf4aEs0tlZo_SGE",
-    authDomain: "goods-gazer.firebaseapp.com",
-    projectId: "goods-gazer",
-    storageBucket: "goods-gazer.appspot.com",
-    messagingSenderId: "514677023453",
-    appId: "1:514677023453:web:7227fe4faca68aa29d3134"
-};
+import { firebaseConfig } from "./config";
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
@@ -33,70 +26,109 @@ const db = getFirestore(app);
 const googleProvider = new GoogleAuthProvider();
 
 const signInWithGoogle = async () => {
-    try {
-        const res = await signInWithPopup(auth, googleProvider);
-        const user = res.user;
-        const q = query(collection(db, "users"), where("uid", "==", user.uid));
-        const docs = await getDocs(q);
-        if (docs.docs.length === 0) {
-            await addDoc(collection(db, "users"), {
-                uid: user.uid,
-                name: user.displayName,
-                authProvider: "google",
-                email: user.email,
-            });
-        }
-    } catch (err) {
-        console.error(err);
-        alert(err.message);
+  try {
+    const res = await signInWithPopup(auth, googleProvider);
+    const user = res.user;
+    const q = query(collection(db, "users"), where("uid", "==", user.uid));
+    const docs = await getDocs(q);
+    if (docs.docs.length === 0) {
+      await addDoc(collection(db, "users"), {
+        uid: user.uid,
+        name: user.displayName,
+        authProvider: "google",
+        email: user.email,
+      });
     }
+
+    return {
+      error: false,
+      message: 'Успешно'
+    };
+  } catch (err) {
+    console.error(`Login error with google  ${err.message}`);
+
+    return {
+      error: true,
+      message: `Ошибка входа по учетной записи google. Пожалуйста, попробуйте позже.`,
+    };
+  }
 };
 
 const logInWithEmailAndPassword = async (email, password) => {
-    try {
-        await signInWithEmailAndPassword(auth, email, password);
-    } catch (err) {
-        console.error(err);
-        alert(err.message);
-    }
+  try {
+    await signInWithEmailAndPassword(auth, email, password);
+
+    return {
+      error: false,
+      message: 'Успешно'
+    };
+  } catch (err) {
+    console.error(`Login error  ${err.message}`);
+
+    return {
+      error: true,
+      message: `Ошибка входа. Пожалуйста, попробуйте позже.`,
+    };
+  }
 };
 
 const registerWithEmailAndPassword = async (name, email, password) => {
-    try {
-        const res = await createUserWithEmailAndPassword(auth, email, password);
-        const user = res.user;
-        await addDoc(collection(db, "users"), {
-            uid: user.uid,
-            name,
-            authProvider: "local",
-            email,
-        });
-    } catch (err) {
-        console.error(err);
-        alert(err.message);
-    }
+  try {
+    const res = await createUserWithEmailAndPassword(auth, email, password);
+    const user = res.user;
+    await addDoc(collection(db, "users"), {
+      uid: user.uid,
+      name,
+      authProvider: "local",
+      email,
+    });
+
+    return {
+      error: false,
+      message: 'Успешно'
+    };
+  } catch (err) {
+    alert(err.message)
+    console.log(err)
+    console.error(`Login error  ${err.message}`);
+
+    return {
+      error: true,
+      message: `Ошибка регистрации. Пожалуйста, попробуйте позже.`,
+    };
+  }
 };
 
 const sendPasswordReset = async (email) => {
-    try {
-        await sendPasswordResetEmail(auth, email);
-        alert("Password reset link sent!");
-    } catch (err) {
-        console.error(err);
-        alert(err.message);
-    }
+  try {
+    const message = "Ссылка на пароль была отправлена по почте!"
+    await sendPasswordResetEmail(auth, email);
+    alert(message);
+
+    return {
+      error: false,
+      message: message
+    };
+  } catch (err) {
+    console.error(`Login error  ${err.message}`);
+
+    return {
+      error: true,
+      message: `Ошибка смены пароля. Пожалуйста, попробуйте позже.`,
+    };
+  }
 };
 
 const logout = () => {
-    signOut(auth);
+  signOut(auth);
 };
 
 export {
-    auth,
-    db,
-    signInWithGoogle,
-    logInWithEmailAndPassword,
-    registerWithEmailAndPassword,
-    sendPasswordReset,
-    logout,
+  auth,
+  db,
+  signInWithGoogle,
+  logInWithEmailAndPassword,
+  registerWithEmailAndPassword,
+  sendPasswordReset,
+  logout,
 };
