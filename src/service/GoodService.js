@@ -41,8 +41,12 @@ const edit_object = async (object, object_name) => {
   }
 };
 
+const edit_rule = async (rule) => {
+  return await edit_object(rule, "rules");
+};
+
 const edit_link = async (link) => {
-  return await edit_object(link, 'links');
+  return await edit_object(link, "links");
 };
 
 const edit_good = async (good) => {
@@ -53,54 +57,95 @@ const edit_folder = async (folder) => {
   return await edit_object(folder, "folder");
 };
 
-const delete_link = async (link_id) => {
+const delete_object_by_id = async (id, object_collection_name) => {
   try {
-    await deleteDoc(doc(db, "links", link_id));
+    await deleteDoc(doc(db, object_collection_name, id));
 
     return { error: false, message: "Успешно удалено" };
   } catch (e) {
-    console.error("Error deleting link: ", e);
+    console.error(`Error deleting object ${object_collection_name}`, e);
 
-    return { error: true, message: "Ошибка при удалении ссылки" };
+    return {
+      error: true,
+      message: `Ошибка при удалении ${object_collection_name}`,
+    };
   }
 };
 
-const delete_goods_prices = async (good_id) => {
-  const prices = query(
-    collection(db, "prices"),
-    where("good_id", "==", good_id)
-  );
-
-  await getDocs(prices).then((querySnapshot) => {
-    querySnapshot.docs.forEach((price) => {
-      deleteDoc(doc(db, "prices", price.id));
-    });
-  });
-};
-
-const delete_goods_links = async (good_id) => {
-  const links = query(collection(db, "links"), where("good_id", "==", good_id));
-  await delete_goods_prices(good_id);
-
-  await getDocs(links).then((querySnapshot) => {
-    querySnapshot.docs.forEach((link) => {
-      deleteDoc(doc(db, "links", link.id));
-    });
-  });
-};
-
-const delete_good = async (good_id) => {
+const delete_objects_by_field = async (
+  object_collection_name,
+  field_name,
+  field_value
+) => {
   try {
-    await delete_goods_prices(good_id);
-    await delete_goods_links(good_id);
-    await deleteDoc(doc(db, "goods", good_id));
+    const q = query(
+      collection(db, object_collection_name),
+      where(field_name, "==", field_value)
+    );
 
-    return { error: false, message: "Успешно удалено" };
+    await getDocs(q).then((querySnapshot) => {
+      querySnapshot.docs.forEach((object) => {
+        deleteDoc(doc(db, object_collection_name, object.id));
+      });
+    });
+    return {
+      error: false,
+      message: `Успешно удален объект ${object_collection_name}`,
+    };
   } catch (e) {
-    console.error("Error deleting good: ", e);
+    console.error(
+      `Error deleting ${object_collection_name} by ${field_name} === ${field_value}`,
+      e
+    );
 
     return { error: true, message: "Ошибка при удалении продукта" };
   }
+};
+
+const delete_link = async (link_id) => {
+  delete_objects_by_field("prices", "link_id", link_id).then((result) => {
+    if (result.error === false) {
+      delete_object_by_id(link_id, "links").then((result) => {
+        return result;
+      });
+    } else return result;
+  });
+};
+
+const delete_rule = async (link_id) => {
+  const result = await delete_object_by_id(link_id, "rules")
+
+  return result
+};
+
+const delete_goods_prices = async (good_id) => {
+  const response = await delete_objects_by_field("prices", "good_id", good_id);
+
+  return response;
+};
+
+const delete_goods_links = async (good_id) => {
+  let result = await delete_goods_prices(good_id);
+
+  if (result.error === false) {
+    result = await delete_objects_by_field("links", "good_id", good_id);
+
+    return result;
+  }
+};
+
+const delete_good = async (good_id) => {
+  let result = await delete_goods_links(good_id);
+
+  if (result.error === false) {
+    result = await delete_object_by_id(good_id, "rules");
+  }
+
+  if (result.error === false) {
+    result = await delete_object_by_id(good_id, "goods");
+  }
+
+  return result;
 };
 
 const delete_folder = async (folder_id) => {
@@ -192,7 +237,9 @@ export {
   edit_good,
   edit_folder,
   edit_link,
+  edit_rule,
   delete_good,
   delete_link,
   delete_folder,
+  delete_rule,
 };
