@@ -41,6 +41,10 @@ const edit_object = async (object, object_name) => {
   }
 };
 
+const edit_link = async (link) => {
+  return await edit_object(link, 'links');
+};
+
 const edit_good = async (good) => {
   return await edit_object(good, "goods");
 };
@@ -122,17 +126,6 @@ const delete_folder = async (folder_id) => {
   }
 };
 
-const add_link = async (link) => {
-  try {
-    const linkRef = await addDoc(collection(db, "links"), link);
-
-    return { error: false, message: "", id: linkRef.id };
-  } catch (e) {
-    console.error("Error adding link: ", e);
-    return { error: true, message: "Ошибка при добавлении ссылки", id: -1 };
-  }
-};
-
 const get_objects_by_field = async (
   field_name,
   field_value,
@@ -196,9 +189,9 @@ export {
   get_prices,
   get_folders,
   get_rules,
-  add_link,
   edit_good,
   edit_folder,
+  edit_link,
   delete_good,
   delete_link,
   delete_folder,

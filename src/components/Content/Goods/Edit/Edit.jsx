@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import {
   get_links,
-  add_link,
+  edit_link,
   edit_good,
   delete_link,
 } from "../../../../service/GoodService";
@@ -18,6 +18,7 @@ const Edit = () => {
   });
 
   const [newLinkFormData, setNewLinkFormData] = useState({
+    id: -1,
     good_id: goodFormData.id,
     name: "",
     url: "",
@@ -30,7 +31,7 @@ const Edit = () => {
     }
   }, [goodFormData.id]);
 
-  const fetch_links = async (good_id = goodFormData.id) => {
+  const fetch_links = async (good_id) => {
     get_links(good_id).then((response) => {
       set_links(response);
     });
@@ -58,7 +59,7 @@ const Edit = () => {
     if (goodFormData.id === -1) {
       alert("Сначала нужно сохранить название товара!");
     } else if (newLinkFormData.name !== "" && newLinkFormData.url !== "") {
-      add_link(newLinkFormData).then(function (result) {
+      edit_link(newLinkFormData).then(function (result) {
         if (result.error === false) {
           fetch_links(goodFormData.id);
           setNewLinkFormData({
@@ -131,7 +132,7 @@ const Edit = () => {
                         e.preventDefault();
                         delete_link(item.id).then((result) => {
                           if (result.error === false) {
-                            fetch_links();
+                            fetch_links(goodFormData.id);
                           }
                         });
                       }}

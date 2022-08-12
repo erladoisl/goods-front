@@ -4,7 +4,7 @@ import Folders from "../Folders/Folders";
 import Edit from "../Folders/Edit/Edit";
 import { useLocation } from "react-router-dom";
 
-const Goods = (props) => {
+const Goods = () => {
   const { state } = useLocation();
   const get_back_link = () => {
     if (state && state.folder_id && state.folder_id !== "0") {
@@ -28,29 +28,28 @@ const Goods = (props) => {
             state={{
               id: -1,
               name: "",
-              folder_id:
-                state && state.folder_id
-                  ? state.folder_id
-                  : "0",
+              folder_id: state && state.folder_id ? state.folder_id : "0",
             }}
             className="btn btn-lg btn-dark m-2"
           >
             Добавить товар
           </NavLink>
-          <Edit 
+          <Edit
             state={{
-              folder_id:
-                state && state.folder_id
-                  ? state.folder_id
-                  : "0",
+              folder_id: state && state.folder_id ? state.folder_id : "0",
             }}
-            />
+          />
         </div>
       </main>
       <div className="container text-white">
         <h3>Товары для мониторинга:</h3>
 
-        <div className="text-start">{get_back_link()} <div className="text-start text-uppercase p-2">{state ? state.folder_name: ''}</div></div>
+        <div className="text-start">
+          {get_back_link()}{" "}
+          <div className="text-start text-uppercase p-2">
+            {state ? state.folder_name : ""}
+          </div>
+        </div>
 
         <table className="table text-white text-start">
           <thead>

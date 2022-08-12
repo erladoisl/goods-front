@@ -7,11 +7,11 @@ const GoodList = (props) => {
   const [goods, set_goods] = useState([]);
 
   useEffect(() => {
-    fetch_goods();
+    fetch_goods(props.folder_id);
   }, [props.folder_id]);
 
-  const fetch_goods = async () => {
-    const data = get_goods(props.folder_id).then((response) => {
+  const fetch_goods = async (folder_id) => {
+    get_goods(folder_id).then((response) => {
       set_goods(response);
     });
   };
@@ -34,7 +34,11 @@ const GoodList = (props) => {
             <td className="col-1">
               <NavLink
                 to="/edit-good"
-                state={{ name: item.name, id: item.id, folder_id: props.folder_id }}
+                state={{
+                  name: item.name,
+                  id: item.id,
+                  folder_id: props.folder_id,
+                }}
                 className="link-light"
               >
                 Редактировать
@@ -46,7 +50,7 @@ const GoodList = (props) => {
                 onClick={() => {
                   delete_good(item.id).then((result) => {
                     if (result.error === false) {
-                      fetch_goods();
+                      fetch_goods(props.folder_id);
                     }
                   });
                 }}
