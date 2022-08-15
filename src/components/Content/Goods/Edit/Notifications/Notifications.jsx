@@ -50,6 +50,7 @@ const Notifications = (props) => {
             operator: "<",
             value: 0,
           });
+          set_show_new_notification(false);
         } else {
           console.log(result);
         }
@@ -58,7 +59,7 @@ const Notifications = (props) => {
   };
 
   return (
-    <div className="container text-white">
+    <div className="container text-white p-0">
       <div className="row">
         <div className="mb-3 col-6 m-auto">
           <hr />
@@ -69,7 +70,7 @@ const Notifications = (props) => {
               width="25"
               height="25"
               fill="currentColor"
-              class="bi bi-plus m-0 col-2"
+              className="bi bi-plus m-0 col-2"
               style={{ cursor: "pointer" }}
               viewBox="0 0 16 16"
               onClick={() => {
@@ -82,40 +83,42 @@ const Notifications = (props) => {
 
           {notifications.length === 0
             ? "Не добавлено ни одного правила оповещения"
-            : "Добавленные оповещения:"}
+            : ""}
         </div>
       </div>
       {notifications.map((item, i) => {
         return (
-          <div key={i} className="row mx-4">
+          <div key={i} className="row">
             <div className="col-6 m-auto">
               <div key={i} className="row">
-                <div className="col-11 p-0">
+                <div className="col-10">
                   <div className="row">
-                    <div className="col-auto p-1">
-                      Оповестить, когда цена будет
-                    </div>
-                    <div className="col-auto p-1">
+                    <div className="col-auto">Оповестить, когда цена будет</div>
+                    <div className="col-auto">
                       {item.operator === "<" ? "меньше" : "больше"}
                     </div>
-                    <div className="col-auto p-1">{item.value}</div>
+                    <div className="col-auto">{item.value}</div>
                   </div>
                 </div>
-                <div className="col-1">
-                  <button
-                    className="btn btn-danger"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      delete_notification(item.id).then((result) => {
-                        if (result.error === false) {
-                          fetch_notifications(props.good_id);
-                        }
-                      });
-                    }}
-                  >
-                    Х
-                  </button>
-                </div>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="25"
+                  height="25"
+                  fill="red"
+                  className="bi bi-plus m-0 col-2"
+                  style={{ cursor: "pointer" }}
+                  viewBox="0 0 16 16"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    delete_notification(item.id).then((result) => {
+                      if (result.error === false) {
+                        fetch_notifications(props.good_id);
+                      }
+                    });
+                  }}
+                >
+                  <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z" />
+                </svg>
               </div>
             </div>
           </div>
@@ -123,17 +126,18 @@ const Notifications = (props) => {
       })}
       {show_new_notification && (
         <>
-          <div className="row my-1">
+          <br />
+          <div className="row">
             <div className="col-6 m-auto">
-              <hr />
               <div className="row">
+                <hr />
                 <h4 className="mb-3 col-10">Новое оповещение:</h4>
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="25"
                   height="25"
                   fill="currentColor"
-                  class="bi bi-plus m-0 col-2"
+                  className="bi bi-plus m-0 col-2"
                   style={{ cursor: "pointer" }}
                   viewBox="0 0 16 16"
                   onClick={() => {
@@ -184,14 +188,15 @@ const Notifications = (props) => {
                   />
                 </div>
               </div>
-            </div>
-          </div>
 
-          <div className="row pt-1">
-            <div className="col-6 m-auto">
-              <button onClick={add_notification} className="btn btn-secondary">
-                Добавить уведомление
-              </button>
+              <div className="row m-auto py-2">
+                <button
+                  onClick={add_notification}
+                  className="btn col-auto btn-secondary"
+                >
+                  Добавить
+                </button>
+              </div>
             </div>
           </div>
         </>
