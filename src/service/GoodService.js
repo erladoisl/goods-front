@@ -103,19 +103,20 @@ const delete_objects_by_field = async (
 };
 
 const delete_link = async (link_id) => {
-  delete_objects_by_field("prices", "link_id", link_id).then((result) => {
-    if (result.error === false) {
-      delete_object_by_id(link_id, "links").then((result) => {
-        return result;
-      });
-    } else return result;
-  });
+  let result = await delete_objects_by_field("prices", "link_id", link_id);
+
+  if (result.error === false) {
+    result = await delete_object_by_id(link_id, "links");
+  }
+
+  return result;
 };
 
 const delete_notification = async (link_id) => {
-  const result = await delete_object_by_id(link_id, "rules")
+  const result = await delete_object_by_id(link_id, "rules");
+  console.log(result);
 
-  return result
+  return result;
 };
 
 const delete_goods_prices = async (good_id) => {
@@ -129,9 +130,9 @@ const delete_goods_links = async (good_id) => {
 
   if (result.error === false) {
     result = await delete_objects_by_field("links", "good_id", good_id);
-
-    return result;
   }
+
+  return result;
 };
 
 const delete_good = async (good_id) => {
