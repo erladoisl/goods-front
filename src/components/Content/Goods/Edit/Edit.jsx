@@ -6,10 +6,12 @@ import {
   edit_good,
   delete_link,
 } from "../../../../service/GoodService";
+import Notifications from "./Notifications/Notifications";
 
 const Edit = () => {
   const { state } = useLocation();
   const [links, set_links] = useState([]);
+  const [show_new_link_form, set_show_new_link_form] = useState(false);
   const [goodFormData, setGoodFormData] = useState({
     id: state.id,
     name: state.name,
@@ -113,6 +115,24 @@ const Edit = () => {
 
         <div className="row">
           <div className="mb-3 col-6 m-auto">
+            <div className="row">
+              <h4 className="mb-3 col-10">Ссылки на продукт:</h4>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="25"
+                height="25"
+                fill="currentColor"
+                class="bi bi-plus m-0 col-2"
+                style={{ cursor: "pointer" }}
+                viewBox="0 0 16 16"
+                onClick={() => {
+                  set_show_new_link_form(true);
+                }}
+              >
+                <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"></path>
+              </svg>
+            </div>
+
             {links.length === 0
               ? "Не добавлено ни одной ссылки на продукт"
               : "Добавленные ссылки:"}
@@ -147,57 +167,76 @@ const Edit = () => {
           );
         })}
 
-        <div className="row">
-          <div className="col-6 m-auto">
-            <hr />
-            <div className="row">
-              <h5 className="mb-3 col-12 m-auto">Добавление новой ссылки:</h5>
-              <div className="col-12 m-1">
-                <input
-                  type="text"
-                  value={newLinkFormData.name}
-                  onChange={(e) =>
-                    setNewLinkFormData({
-                      ...newLinkFormData,
-                      name: e.target.value,
-                    })
-                  }
-                  className="form-control"
-                  id="address"
-                  placeholder="Название магазина"
-                  required=""
-                />
-                <div className="invalid-feedback">
-                  Название магазина обязательно для заполнения.
+        {show_new_link_form && (
+          <div className="row">
+            <div className="col-6 m-auto">
+              <hr />
+              <div className="row">
+                <div className="row">
+                  <h4 className="mb-3 col-10">Добавление новой ссылки:</h4>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="25"
+                    height="25"
+                    fill="currentColor"
+                    class="bi bi-plus m-0 col-2"
+                    style={{ cursor: "pointer" }}
+                    viewBox="0 0 16 16"
+                    onClick={() => {
+                      set_show_new_link_form(false);
+                    }}
+                  >
+                    <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z" />
+                  </svg>
                 </div>
-              </div>
-              <div className="col-12 m-1">
-                <input
-                  type="text"
-                  value={newLinkFormData.url}
-                  onChange={(e) =>
-                    setNewLinkFormData({
-                      ...newLinkFormData,
-                      url: e.target.value,
-                    })
-                  }
-                  className="form-control"
-                  id="address"
-                  placeholder="Ссылка на товар"
-                  required=""
-                />
-                <div className="invalid-feedback">
-                  Ссылка на товар обязательно для заполнения.
+                <div className="col-12 m-1">
+                  <input
+                    type="text"
+                    value={newLinkFormData.name}
+                    onChange={(e) =>
+                      setNewLinkFormData({
+                        ...newLinkFormData,
+                        name: e.target.value,
+                      })
+                    }
+                    className="form-control"
+                    id="address"
+                    placeholder="Название магазина"
+                    required=""
+                  />
+                  <div className="invalid-feedback">
+                    Название магазина обязательно для заполнения.
+                  </div>
                 </div>
-              </div>
-              <div className="col-12 m-1">
-                <button onClick={addLinkSubmit} className="btn btn-secondary">
-                  Добавить
-                </button>
+                <div className="col-12 m-1">
+                  <input
+                    type="text"
+                    value={newLinkFormData.url}
+                    onChange={(e) =>
+                      setNewLinkFormData({
+                        ...newLinkFormData,
+                        url: e.target.value,
+                      })
+                    }
+                    className="form-control"
+                    id="address"
+                    placeholder="Ссылка на товар"
+                    required=""
+                  />
+                  <div className="invalid-feedback">
+                    Ссылка на товар обязательно для заполнения.
+                  </div>
+                </div>
+                <div className="col-12 m-1">
+                  <button onClick={addLinkSubmit} className="btn btn-secondary">
+                    Добавить
+                  </button>
+                </div>
               </div>
             </div>
           </div>
-        </div>
+        )}
+        <Notifications good_id={state.id} />
       </form>
     </div>
   );
