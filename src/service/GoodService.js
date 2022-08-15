@@ -21,7 +21,7 @@ const edit_object = async (object, object_name) => {
   try {
     let objectRef = {};
 
-    if (object.id !== -1) {
+    if (object.id && object.id !== -1) {
       const object_doc = doc(db, object_name, object.id);
       objectRef = await updateDoc(object_doc, object);
     } else {
@@ -41,7 +41,7 @@ const edit_object = async (object, object_name) => {
   }
 };
 
-const edit_rule = async (rule) => {
+const edit_notification = async (rule) => {
   return await edit_object(rule, "rules");
 };
 
@@ -112,7 +112,7 @@ const delete_link = async (link_id) => {
   });
 };
 
-const delete_rule = async (link_id) => {
+const delete_notification = async (link_id) => {
   const result = await delete_object_by_id(link_id, "rules")
 
   return result
@@ -174,7 +174,7 @@ const delete_folder = async (folder_id) => {
 const get_objects_by_field = async (
   field_name,
   field_value,
-  object_name,
+  object_collection_name,
   ordered_field_name = "",
   ordered = false
 ) => {
@@ -184,13 +184,13 @@ const get_objects_by_field = async (
   try {
     if (ordered) {
       q = query(
-        collection(db, object_name),
+        collection(db, object_collection_name),
         orderBy(ordered_field_name),
         where(field_name, "==", field_value)
       );
     } else {
       q = query(
-        collection(db, object_name),
+        collection(db, object_collection_name),
         where(field_name, "==", field_value)
       );
     }
@@ -202,7 +202,7 @@ const get_objects_by_field = async (
     });
   } catch (err) {
     console.error(err);
-    alert(err.message);
+    // alert(err.message);
   } finally {
     return objects;
   }
@@ -224,7 +224,7 @@ const get_prices = async (link_id) => {
   return await get_objects_by_field("link_id", link_id, "prices", "date", true);
 };
 
-const get_rules = async (good_id) => {
+const get_notifications = async (good_id) => {
   return await get_objects_by_field("good_id", good_id, "rules");
 };
 
@@ -233,13 +233,13 @@ export {
   get_links,
   get_prices,
   get_folders,
-  get_rules,
+  get_notifications,
   edit_good,
   edit_folder,
   edit_link,
-  edit_rule,
+  edit_notification,
   delete_good,
   delete_link,
   delete_folder,
-  delete_rule,
+  delete_notification,
 };

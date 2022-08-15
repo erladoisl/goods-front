@@ -1,0 +1,13 @@
+.transparent {
+    background-color: transparent;
+    border: none;
+}
+
+.transparent:focus {
+    background-color: transparent;
+    border: none;
+}
+
+.transparent option {
+    color: rgb(18, 82, 60);
+}
