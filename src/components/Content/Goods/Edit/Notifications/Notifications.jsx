@@ -20,7 +20,7 @@ const Notifications = (props) => {
 
   useEffect(() => {
     fetch_notifications(props.good_id);
-  }, []);
+  }, [props.good_id]);
 
   useEffect(() => {
     if (props.good_id > 0) {

@@ -10,7 +10,7 @@ const Good = () => {
 
   useEffect(() => {
     fetch_links(state.id);
-  }, []);
+  }, [state.id]);
 
   const fetch_links = async (good_id) => {
     get_links(good_id).then((response) => {
