@@ -6,7 +6,8 @@ const firebaseConfig = {
     messagingSenderId: "---",
     appId: "---"
 };
-
+const admin_uids = ['***']
 export {
     firebaseConfig,
-};
+    admin_uids,
+}
