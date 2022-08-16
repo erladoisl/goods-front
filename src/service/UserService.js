@@ -15,6 +15,7 @@ import {
   collection,
   where,
   addDoc,
+  firebase
 } from "firebase/firestore";
 
 import { firebaseConfig } from "./config";
@@ -22,8 +23,8 @@ import { firebaseConfig } from "./config";
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
-
 const googleProvider = new GoogleAuthProvider();
+
 
 const signInWithGoogle = async () => {
   try {
