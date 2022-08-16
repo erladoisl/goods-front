@@ -1,11 +1,25 @@
-# Getting Started with Create React App
+# Description
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Goods-gazer front, as part of the firebase project to monitor the prices of products of interest. It also allows you to inform about a price increase or decrease, depending on the rules created by the user.
 
-## Available Scripts
+Фронт goods-gazer, в рамках firebase проекта для мониторинга цен интересующих продуктов. Позволяет так же информировать о снижении или повышении цен в зависимости от правил, созданных пользователем.
 
-In the project directory to run project, you can run:
+# Prepearing
+
+In the folder *src\service\* create _config.js_ file by the example: *config.example.js*
+
+# Deploying to firebase
+
+From root folder:
+
+npm install
+
+npm run build
+
+firebase deploy
+
+# Run local
+
+### `npm install`
 
 ### `npm start`
-
-### `npm run build`
