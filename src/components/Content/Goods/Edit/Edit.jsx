@@ -7,17 +7,27 @@ import {
   delete_link,
 } from "../../../../service/GoodService";
 import Notifications from "./Notifications/Notifications";
+import { useAuthState } from "react-firebase-hooks/auth";
+import { auth } from "../../../../service/UserService";
 
 const Edit = () => {
   const { state } = useLocation();
   const [links, set_links] = useState([]);
   const [show_new_link_form, set_show_new_link_form] = useState(false);
+  const [user, loading, error] = useAuthState(auth);
   const [goodFormData, setGoodFormData] = useState({
     id: state.id,
     name: state.name,
-    user_id: -1,
+    user_uid: -1,
     folder_id: state.folder_id,
   });
+
+  useEffect(() => {
+    if (loading) return;
+    if (user) {
+      setGoodFormData({ ...goodFormData, user_uid: user.uid });
+    }
+  }, [user, loading]);
 
   const [newLinkFormData, setNewLinkFormData] = useState({
     id: -1,
@@ -146,7 +156,10 @@ const Edit = () => {
               <div key={i} className="row">
                 <div className="mb-3 col-6 m-auto">
                   <div key={i} className="row">
-                    <h4 className="col-10"> {i + 1}) {item.name} </h4>
+                    <h4 className="col-10">
+                      {" "}
+                      {i + 1}) {item.name}{" "}
+                    </h4>
 
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -167,7 +180,9 @@ const Edit = () => {
                     >
                       <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z" />
                     </svg>
-                    <div className="col-12" style={{overflow: 'hidden'}}>Ссылка: {item.url}</div>
+                    <div className="col-12" style={{ overflow: "hidden" }}>
+                      Ссылка: {item.url}
+                    </div>
                   </div>
                 </div>
               </div>

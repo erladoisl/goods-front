@@ -18,6 +18,12 @@ const GoodList = (props) => {
 
   return (
     <>
+    {goods.length == 0 && ( <tr>
+        <td> 
+          Добавь товар для начала работы
+        </td>
+        <td></td><td></td><td></td>
+        </tr>)}
       {goods.map((item, i) => {
         return (
           <tr key={i}>

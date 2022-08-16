@@ -11,6 +11,12 @@ const Header = (() => {
   const [name, setName] = useState("");
   const navigate = useNavigate();
 
+  useEffect(() => {
+    // if (loading) return;
+    if (!user) return navigate("/");
+    fetchUserName();
+  }, [user, loading]);
+  
   const fetchUserName = async () => {
     try {
       const q = query(collection(db, "users"), where("uid", "==", user?.uid));
@@ -22,11 +28,6 @@ const Header = (() => {
       console.error("An error occured while fetching user data");
     }
   };
-  useEffect(() => {
-    if (loading) return;
-    if (!user) return navigate("/");
-    fetchUserName();
-  }, [user, loading]);
 
   return (
     <header>

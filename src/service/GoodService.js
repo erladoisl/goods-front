@@ -11,8 +11,9 @@ import {
   doc,
   deleteDoc,
 } from "firebase/firestore";
-
 import { firebaseConfig } from "./config";
+import { auth } from "./UserService";
+import { admin_uids } from "./config";
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
@@ -114,7 +115,6 @@ const delete_link = async (link_id) => {
 
 const delete_notification = async (link_id) => {
   const result = await delete_object_by_id(link_id, "rules");
-  console.log(result);
 
   return result;
 };
@@ -181,26 +181,37 @@ const get_objects_by_field = async (
 ) => {
   let objects = [];
   let q = null;
+  const user = auth.currentUser
 
   try {
-    if (ordered) {
-      q = query(
-        collection(db, object_collection_name),
-        orderBy(ordered_field_name),
-        where(field_name, "==", field_value)
-      );
-    } else {
-      q = query(
-        collection(db, object_collection_name),
-        where(field_name, "==", field_value)
-      );
-    }
-
-    await getDocs(q).then((querySnapshot) => {
-      querySnapshot.docs.forEach((doc) => {
-        objects.push({ ...doc.data(), id: doc.id });
+    if (user !== null) {
+      if (ordered) {
+        q = query(
+          collection(db, object_collection_name),
+          orderBy(ordered_field_name),
+          where(field_name, "==", field_value)
+        );
+      } else if (
+        ["folder", "goods"].indexOf(object_collection_name) !== -1 &&
+        admin_uids.indexOf(user.uid) === -1
+      ) {
+        q = query(
+          collection(db, object_collection_name),
+          where(field_name, "==", field_value),
+          where("user_uid", "==", user.uid)
+        );
+      } else {
+        q = query(
+          collection(db, object_collection_name),
+          where(field_name, "==", field_value)
+        );
+      }
+      await getDocs(q).then((querySnapshot) => {
+        querySnapshot.docs.forEach((doc) => {
+          objects.push({ ...doc.data(), id: doc.id });
+        });
       });
-    });
+    }
   } catch (err) {
     console.error(err);
     // alert(err.message);

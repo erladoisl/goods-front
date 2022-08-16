@@ -1,16 +1,27 @@
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { edit_folder } from "../../../../service/GoodService";
+import { useAuthState } from "react-firebase-hooks/auth";
+import { auth } from "../../../../service/UserService";
 
 const Edit = () => {
   const { state } = useLocation();
   const navigate = useNavigate();
   const close_button = useRef(null);
+  const [user, loading, error] = useAuthState(auth);
   const [folder, set_folder_name] = useState({
     id: -1,
     name: "",
-    parent_id: state && state.folder_id ? state.folder_id : '0',
+    parent_id: state && state.folder_id ? state.folder_id : "0",
+    user_uid: -1,
   });
+
+  useEffect(() => {
+    if (loading) return;
+    if (user) {
+      set_folder_name({ ...folder, user_uid: user.uid });
+    }
+  }, [user, loading]);
 
   const go_to_folder = (folder_id) => {
     navigate("/content", { state: { folder_id: folder_id } });
