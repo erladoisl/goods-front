@@ -22,7 +22,7 @@ const Folders = (props) => {
         return (
           <tr key={i}>
             <Folder item={item} parent_folder_id={props.folder_id} />
-            <td className="col-1">
+            <td className="col-1 text-end">
               <button
                 className="btn btn-danger"
                 onClick={() => {
