@@ -61,7 +61,7 @@ const Notifications = (props) => {
   return (
     <div className="container text-white p-0">
       <div className="row">
-        <div className="mb-3 col-6 m-auto">
+        <div className="col-12 col-lg-6 m-auto">
           <hr />
           <div className="row">
             <h4 className="mb-3 col-10">Оповещения:</h4>
@@ -70,7 +70,7 @@ const Notifications = (props) => {
               width="25"
               height="25"
               fill="currentColor"
-              className="bi bi-plus m-0 col-2"
+              className="bi bi-plus m-0 col-auto col-lg-2"
               style={{ cursor: "pointer" }}
               viewBox="0 0 16 16"
               onClick={() => {
@@ -89,15 +89,15 @@ const Notifications = (props) => {
       {notifications.map((item, i) => {
         return (
           <div key={i} className="row">
-            <div className="col-6 m-auto">
+            <div className="col-12 col-lg-6 m-auto">
               <div key={i} className="row">
                 <div className="col-10">
                   <div className="row">
                     <div className="col-auto">Оповестить, когда цена будет</div>
-                    <div className="col-auto">
+                    <div className="col-auto p-0">
                       {item.operator === "<" ? "меньше" : "больше"}
                     </div>
-                    <div className="col-auto">{item.value}</div>
+                    <div className="col-2">{item.value}</div>
                   </div>
                 </div>
                 <svg
@@ -105,7 +105,7 @@ const Notifications = (props) => {
                   width="25"
                   height="25"
                   fill="red"
-                  className="bi bi-plus m-0 col-2"
+                  className="bi bi-plus m-0 col-auto col-lg-2"
                   style={{ cursor: "pointer" }}
                   viewBox="0 0 16 16"
                   onClick={(e) => {
@@ -128,24 +128,10 @@ const Notifications = (props) => {
         <>
           <br />
           <div className="row">
-            <div className="col-6 m-auto">
+            <div className="col-12 col-lg-6 m-auto">
               <div className="row">
                 <hr />
                 <h4 className="mb-3 col-10">Новое оповещение:</h4>
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="25"
-                  height="25"
-                  fill="currentColor"
-                  className="bi bi-plus m-0 col-2"
-                  style={{ cursor: "pointer" }}
-                  viewBox="0 0 16 16"
-                  onClick={() => {
-                    set_show_new_notification(false);
-                  }}
-                >
-                  <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z" />
-                </svg>
               </div>
               <div className="row m-auto">
                 <div className="col-auto p-0">
@@ -172,7 +158,7 @@ const Notifications = (props) => {
                     })}
                   </select>
                 </div>
-                <div className="col-6 col-md-3">
+                <div className="col-2 p-0">
                   <input
                     type="text"
                     value={notification.value}
@@ -196,6 +182,14 @@ const Notifications = (props) => {
                 >
                   Добавить
                 </button>
+                <button
+                className="btn btn-danger col-auto mx-1"
+                onClick={() => {
+                  set_show_new_notification(false);
+                }}
+              >
+                Х
+              </button>
               </div>
             </div>
           </div>
