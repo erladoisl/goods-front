@@ -15,16 +15,29 @@ import {
   collection,
   where,
   addDoc,
-  firebase
 } from "firebase/firestore";
 
 import { firebaseConfig } from "./config";
+import { get_objects_by_field } from "./FirebaseService";
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 const googleProvider = new GoogleAuthProvider();
 
+const get_telegram_chat_id = async(user_uid) => {
+  let telegram_chat_id = '-1'
+  try {
+    const telegram_chats = await get_objects_by_field('user_uid', user_uid, 'telegram_chats')
+    if (telegram_chats.length > 0) {
+      telegram_chat_id = telegram_chats[0].chat_id
+    }
+  } catch (e) {
+    console.log(`Error while getting telegram chat id ${e}`)
+  } finally {
+    return telegram_chat_id
+  }
+}
 
 const signInWithGoogle = async () => {
   try {
@@ -38,12 +51,13 @@ const signInWithGoogle = async () => {
         name: user.displayName,
         authProvider: "google",
         email: user.email,
+        role: 'common',
       });
     }
 
     return {
       error: false,
-      message: 'Успешно'
+      message: "Успешно",
     };
   } catch (err) {
     console.error(`Login error with google  ${err.message}`);
@@ -61,7 +75,7 @@ const logInWithEmailAndPassword = async (email, password) => {
 
     return {
       error: false,
-      message: 'Успешно'
+      message: "Успешно",
     };
   } catch (err) {
     console.error(`Login error  ${err.message}`);
@@ -81,16 +95,17 @@ const registerWithEmailAndPassword = async (name, email, password) => {
       uid: user.uid,
       name,
       authProvider: "local",
+      role: 'common',
       email,
     });
 
     return {
       error: false,
-      message: 'Успешно'
+      message: "Успешно",
     };
   } catch (err) {
-    alert(err.message)
-    console.log(err)
+    alert(err.message);
+    console.log(err);
     console.error(`Login error  ${err.message}`);
 
     return {
@@ -102,13 +117,13 @@ const registerWithEmailAndPassword = async (name, email, password) => {
 
 const sendPasswordReset = async (email) => {
   try {
-    const message = "Ссылка на пароль была отправлена по почте!"
+    const message = "Ссылка на пароль была отправлена по почте!";
     await sendPasswordResetEmail(auth, email);
     alert(message);
 
     return {
       error: false,
-      message: message
+      message: message,
     };
   } catch (err) {
     console.error(`Login error  ${err.message}`);
@@ -132,4 +147,5 @@ export {
   registerWithEmailAndPassword,
   sendPasswordReset,
   logout,
+  get_telegram_chat_id,
 };

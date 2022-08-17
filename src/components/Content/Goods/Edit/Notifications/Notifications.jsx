@@ -1,16 +1,19 @@
 import React, { useEffect, useState } from "react";
+import { useAuthState } from "react-firebase-hooks/auth";
 import {
   edit_notification,
   get_notifications,
   delete_notification,
 } from "../../../../../service/GoodService";
+import { get_telegram_chat_id, auth } from "../../../../../service/UserService";
 import c from "./Notifications.module.css";
 
 const Notifications = (props) => {
   const operators = ["меньше", "больше"];
+  const [user, loading, error] = useAuthState(auth);
   const [notifications, set_notifications] = useState([]);
   const [show_new_notification, set_show_new_notification] = useState(false);
-
+  const [telegram_chat_id, set_telegram_chat_id] = useState(-1);
   const [notification, set_notification] = useState({
     id: -1,
     good_id: props.good_id,
@@ -19,11 +22,14 @@ const Notifications = (props) => {
   });
 
   useEffect(() => {
-    fetch_notifications(props.good_id);
-  }, [props.good_id]);
+    if (user) {
+      fetch_tlgrm_chat_info(user.uid);
+    }
+  }, [user]);
+
 
   useEffect(() => {
-    if (props.good_id > 0) {
+    if (props.good_id !== -1) {
       fetch_notifications(props.good_id);
       set_notification({ ...notification, good_id: props.good_id });
     }
@@ -33,6 +39,11 @@ const Notifications = (props) => {
     get_notifications(good_id).then((response) => {
       set_notifications(response);
     });
+  };
+
+  const fetch_tlgrm_chat_info = async (user_uid) => {
+    const chat_id = await get_telegram_chat_id(user_uid);
+    set_telegram_chat_id(chat_id);
   };
 
   const add_notification = (e) => {
@@ -81,9 +92,17 @@ const Notifications = (props) => {
             </svg>
           </div>
 
-          {notifications.length === 0
-            ? "Не добавлено ни одного правила оповещения"
-            : ""}
+          {telegram_chat_id === "-1" && (
+            <div className="alert alert-danger" role="alert">
+              Необходимо приявязать телеграм для уведомлений
+            </div>
+          )}
+
+          {notifications.length === 0 && (
+            <div className="alert alert-info" role="alert">
+              Не добавлено ни одного правила оповещения
+            </div>
+          )}
         </div>
       </div>
       {notifications.map((item, i) => {
@@ -183,13 +202,13 @@ const Notifications = (props) => {
                   Добавить
                 </button>
                 <button
-                className="btn btn-danger col-auto mx-1"
-                onClick={() => {
-                  set_show_new_notification(false);
-                }}
-              >
-                Х
-              </button>
+                  className="btn btn-danger col-auto mx-1"
+                  onClick={() => {
+                    set_show_new_notification(false);
+                  }}
+                >
+                  Х
+                </button>
               </div>
             </div>
           </div>
