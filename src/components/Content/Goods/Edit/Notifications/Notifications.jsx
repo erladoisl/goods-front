@@ -19,7 +19,7 @@ const Notifications = (props) => {
     good_id: props.good_id,
     operator: "<",
     value: 0,
-  });
+  }); 
 
   useEffect(() => {
     if (user) {
@@ -94,7 +94,7 @@ const Notifications = (props) => {
 
           {telegram_chat_id === "-1" && (
             <div className="alert alert-danger" role="alert">
-              Необходимо приявязать телеграм для уведомлений
+              Необходимо <a className="link-danger" href={`https://t.me/goods_gazer_bot?start=${user.uid}`}>привязать</a> телеграм для уведомлений
             </div>
           )}
 
