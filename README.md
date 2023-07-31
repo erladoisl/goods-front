@@ -4,6 +4,9 @@ Goods-gazer front, as part of the firebase project to monitor the prices of prod
 
 Фронт goods-gazer, в рамках firebase проекта для мониторинга цен интересующих продуктов. Позволяет так же информировать о снижении или повышении цен в зависимости от правил, созданных пользователем.
 
+# Requirements
+npm 8.3.1
+
 # Prepearing
 
 In the folder *src\service\* create _config.js_ file by the example: *config.example.js*
